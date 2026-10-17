@@ -44,5 +44,16 @@ Addionally, with the arrival of 4th jobs and new homunculus skills, the followin
    - Tempering
    - Blast Forge (Thanks to [vorpal1337](https://github.com/vorpal1337))
    
+## AzzyAI Config X (cross-platform configuration tool)
+The bundled `AzzyAIConfig.exe` is Windows-only (.NET Framework 4.0 WinForms). `USER_AI/azzyai-configx.py` is a fully cross-platform reconstruction of its UI — it runs on Linux, Windows and macOS with plain Python 3 (standard library only, zero dependencies):
+
+- The same 7 tabs: Homunculus, Mercenary, Homunculus Tactics, Mercenary Tactics, PVP Tactics, Merc PVP Tactics, Extra Options
+- Every option found in `H_Config.lua` / `M_Config.lua`, grouped by the original's categories, with enum dropdowns and defaults from `Defaults.lua`
+- Tactics editors that read and write the real `TACT_*` / `SKILL_*` / `CLASS_*` constants (parsed from `Const_.lua`)
+- In-place regex saves: file comments and layout are preserved, exactly like the original tool
+- Improvements over the original: live option search, tooltips extracted from `Documentation.pdf`, "differs from default" highlighting, NaN/invalid input guards and duplicate/invalid tactics-key validation, plus an E2E test suite
+
+Usage: copy it into your `USER_AI` folder and run `python3 azzyai-configx.py` — the interface opens in your browser automatically. Rest -> Call your homunculus (or `@refresh`) for changes to take effect.
+
 ## Disclaimer ##
 Certain functionality may not work as expected or not at all due to the declining support of AIs in newer clients, backup your current AI in any case before applying. Feel free to open issues if you find bugs. **Pull-requests are welcome!**
