@@ -8,3 +8,7 @@
 H_*.txt
 test.txt
 *Timeouts.lua
+# AzzyAI Config X E2E
+sandbox/
+tests/artifacts/
+tests/node_modules/

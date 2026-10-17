@@ -1,0 +1,12 @@
+{
+  "name": "azzyai-configx-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "E2E test suite for AzzyAI Config X (Playwright)",
+  "scripts": {
+    "test": "node e2e.cjs"
+  },
+  "dependencies": {
+    "playwright": "^1.50.0"
+  }
+}

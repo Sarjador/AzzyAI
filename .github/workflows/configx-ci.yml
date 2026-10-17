@@ -1,0 +1,110 @@
+name: AzzyAI Config X CI
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'USER_AI/azzyai-configx.py'
+      - 'tests/**'
+      - '.github/workflows/configx-ci.yml'
+  pull_request:
+    paths:
+      - 'USER_AI/azzyai-configx.py'
+      - 'tests/**'
+      - '.github/workflows/configx-ci.yml'
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    name: E2E tests (Playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install test dependencies
+        working-directory: tests
+        run: |
+          npm install
+          npx playwright install chromium --with-deps
+
+      - name: Prepare disposable sandbox
+        run: |
+          mkdir -p sandbox/USER_AI/data
+          cp USER_AI/*.lua USER_AI/azzyai-configx.py sandbox/USER_AI/
+          touch sandbox/USER_AI/data/dummy.txt
+          python3 -m py_compile USER_AI/azzyai-configx.py
+
+      - name: Start config server
+        run: |
+          cd sandbox/USER_AI
+          nohup python3 azzyai-configx.py --no-browser --port 7399 > server.log 2>&1 &
+          sleep 3
+          curl -fsS http://127.0.0.1:7399/api/state > /dev/null
+
+      - name: Run E2E suite
+        env:
+          URL: http://127.0.0.1:7399
+          CFG: sandbox/USER_AI/H_Config.lua
+        run: node tests/e2e.cjs
+
+      - name: Server log on failure
+        if: failure()
+        run: cat sandbox/USER_AI/server.log || true
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-screenshots
+          path: tests/artifacts/*.png
+          if-no-files-found: ignore
+
+  build:
+    name: Package (${{ matrix.name }})
+    needs: e2e
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest,  name: linux,   ext: '' }
+          - { os: windows-latest, name: windows, ext: '.exe' }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install PyInstaller
+        run: pip install "pyinstaller>=6.0"
+
+      - name: Build onefile executable
+        run: pyinstaller --onefile --name AzzyAIConfigX --clean -y USER_AI/azzyai-configx.py
+
+      - name: Smoke test (starts and serves)
+        if: runner.os == 'Linux'
+        run: |
+          cp dist/AzzyAIConfigX sandbox_check 2>/dev/null || true
+          mkdir -p smoke/USER_AI
+          cp USER_AI/*.lua smoke/USER_AI/
+          mkdir -p smoke/USER_AI/data && touch smoke/USER_AI/data/dummy.txt
+          cp dist/AzzyAIConfigX smoke/USER_AI/
+          cd smoke/USER_AI
+          nohup ./AzzyAIConfigX --no-browser --port 7402 > smoke.log 2>&1 &
+          sleep 5
+          curl -fsS http://127.0.0.1:7402/api/state > /dev/null
+          grep -q "USER_AI" smoke.log
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AzzyAIConfigX-${{ matrix.name }}
+          path: dist/*

@@ -45,6 +45,8 @@ Addionally, with the arrival of 4th jobs and new homunculus skills, the followin
    - Blast Forge (Thanks to [vorpal1337](https://github.com/vorpal1337))
    
 ## AzzyAI Config X (cross-platform configuration tool)
+
+[![AzzyAI Config X CI](https://github.com/Sarjador/AzzyAI/actions/workflows/configx-ci.yml/badge.svg)](https://github.com/Sarjador/AzzyAI/actions/workflows/configx-ci.yml)
 The bundled `AzzyAIConfig.exe` is Windows-only (.NET Framework 4.0 WinForms). `USER_AI/azzyai-configx.py` is a fully cross-platform reconstruction of its UI — it runs on Linux, Windows and macOS with plain Python 3 (standard library only, zero dependencies):
 
 - The same 7 tabs: Homunculus, Mercenary, Homunculus Tactics, Mercenary Tactics, PVP Tactics, Merc PVP Tactics, Extra Options
