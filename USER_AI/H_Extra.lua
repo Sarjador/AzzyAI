@@ -52,3 +52,27 @@ Dr. Azzy takes no responsibility for your lua programming; I barely take respons
 
 -- Adjust the Dieter Blast Forge delay to avoid casting it while the previous one is up: only 1 Blast Forge can be up at a time, and it does not refresh the duration when re-cast, so an early re-cast is a waste.
 SkillInfo[MH_BLAST_FORGE][6]={2000,2000,2000,2000,2000,2000,2000,2000,2000,2000}
+
+--------------------------------------------------------------------
+-- AFKemist Reactivado
+-- Requiere el parche de cliente (Attack id-check bypass en uaRO.exe).
+-- El homúnculo ordena al owner (alchemist/creator) atacar a su objetivo.
+-- Con armas auto-spell (Fire Blend → Fire Bolt lv3, Tomahawk → Throw
+-- Tomahawk) el servidor dispara el hechizo en cada golpe físico.
+-- Pon AFKemistEnabled = 0 para desactivarlo.
+--------------------------------------------------------------------
+AFKemistEnabled = 0
+AFKemist_LastOrder = 0
+
+function OnAIEnd()
+	if AFKemistEnabled ~= 1 then return end
+	local owner = GetV(V_OWNER, MyID)
+	if owner == nil or owner == 0 then return end
+	if MyState ~= ATTACK_ST or MyEnemy == nil or MyEnemy == 0 then return end
+	if MOTION_DEAD == GetV(V_MOTION, MyEnemy) then return end
+	if AFKemist_LastOrder ~= MyEnemy then
+		Attack(owner, MyEnemy)
+		AFKemist_LastOrder = MyEnemy
+		TraceAI("AFKemist: owner " .. owner .. " ordered to attack " .. MyEnemy)
+	end
+end

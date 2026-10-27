@@ -31,7 +31,7 @@ function WriteStartupLog(Version,ErrorCode,ErrorInfo)
 		AUVersion="1.30b or earlier"
 		ErrorCode="File version error"
 		ErrorInfo=ErrorInfo.."AzzyUtil.lua no version found"
-	elseif string.gfind(AUVersion,verspattern)()~="1.552" then
+	elseif string.gfind(AUVersion,verspattern)()~="1.56" then
 		ErrorCode="File version error"
 		ErrorInfo=ErrorInfo.."AzzyUtil.lua wrong version "..string.gfind(AUVersion,verspattern)().."\n"
 	end
@@ -46,7 +46,7 @@ function WriteStartupLog(Version,ErrorCode,ErrorInfo)
 		CVersion="1.30b or earlier"
 		ErrorCode="File version error"
 		ErrorInfo=ErrorInfo.."Const_.lua no version found"
-	elseif string.gfind(CVersion,verspattern)()~="1.56" then
+	elseif string.gfind(CVersion,verspattern)()~="1.552" then
 		ErrorCode="File version error"
 		ErrorInfo=ErrorInfo.."Const_.lua wrong version "..string.gfind(CVersion,verspattern)().."\n"
 	end
