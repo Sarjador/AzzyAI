@@ -12,3 +12,7 @@ test.txt
 sandbox/
 tests/artifacts/
 tests/node_modules/
+
+# Syncthing
+.stfolder/
+*.sync-conflict-*
