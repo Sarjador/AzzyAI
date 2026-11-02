@@ -16,3 +16,16 @@ tests/node_modules/
 # Syncthing
 .stfolder/
 *.sync-conflict-*
+
+# vanilla client copies dropped inside USER_AI (client-managed)
+USER_AI/Const.lua
+USER_AI/Util.lua
+USER_AI/__AI_M.lua
+USER_AI/Changelog.txt
+
+# mercenary runtime data
+M_*.txt
+testM.txt
+
+# pre-fork backup
+USER_AI_backup_default/
